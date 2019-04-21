@@ -14,8 +14,10 @@ namespace Drive {
         return _drive;
     }
 
-    //% block="Setup wheel diameter: %diameter cm and wheelbase: %wheelbase cm and direction forward %forward"
-    //% forward.defl = true
+    //% block="Setup wheel diameter: %diameter cm and wheelbase: %wheelbase cm || and direction forward %forward"
+    //% diameter.defl=5
+    //% wheelbase.defl=5
+    //% forward.defl=true
     //% inlineInputMode=inline
     export function setup(diameter: number, wheelbase: number, forward?: boolean) {
         _diameter = diameter;
@@ -98,9 +100,10 @@ namespace Drive {
         _drive = false;
     }
 
-    //% block="Motor speed: %speed steering: %steering percent: %percent"
-    //% steering.defl = 0
-    //% percent.defl = 100
+    //% block="Motor speed: %speed || steering: %steering || percent: %percent"
+    //% speed.defl=20
+    //% steering.defl=0
+    //% percent.defl=100
     //% inlineInputMode=inline
     export function motor(speed: number, steering?: number, percent?: number) {
         if (("" + percent) == "NaN") percent = 0;
@@ -120,9 +123,10 @@ namespace Drive {
         console.logValue("L", steering);
     }
 
-    //% block="Drive on angle: %angle and speed: %speed Percent: %percent (with GYRO)"
-    //% speed.defl = 0
-    //% percent.defl = 100
+    //% block="Drive (with GYRO) on angle: %angle and speed: %speed || Percent: %percent"
+    //% speed.defl=20
+    //% speed.defl=0
+    //% percent.defl=0
     //% inlineInputMode=inline
     export function GYROmotor(angle: number, speed?: number, percent?: number) {
         let gyro = sensors.gyro1.angle();
@@ -141,9 +145,10 @@ namespace Drive {
         console.log("GYROmotor" + " D:" + formatNumber(diff) + " W:" + formatNumber(angle));
     }
 
-    //% block="Rotate on angle: %angle (with GYRO)"
+    //% block="Rotate (with GYRO) on angle: %angle || stop: %stop"
+    //% stop.defl=true
     //% inlineInputMode=inline
-    export function GYROrotate(angle: number, stop: boolean) {
+    export function GYROrotate(angle: number, stop?: boolean) {
         for (let i = 0; i < 3; i++) {
             const loops = 15;
             let count = 0;
@@ -167,8 +172,8 @@ namespace Drive {
         }
     }
 
-    //% block="Drive %cm cm from %angleA to %angleE with speed: %speedE (with GYRO)"
-    //% speedE.defl = NaN
+    //% block="Drive (with GYRO) %cm cm from %angleA to %angleE || with speed: %speedE"
+    //% speedE.defl=NaN
     //% inlineInputMode=inline
     export function GYROdrive(cm: number, angleA: number, angleE: number, speedE?: number) {
         if (("" + speedE) == "NaN") speedE = _currentSpeed;
