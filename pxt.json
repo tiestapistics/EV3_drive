@@ -1,7 +1,7 @@
 {
     "name": "ev3_drive",
     "version": "1.0.0",
-    "description": "",
+    "description": "MakeCode Library for the LEGO MINDSTORMS EV3. Allows the EV3 to move along a line or angle using the gyro sensor.",
     "dependencies": {
         "ev3": "*"
     },
