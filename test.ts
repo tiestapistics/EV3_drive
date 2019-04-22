@@ -108,6 +108,6 @@ Drive.info();
 music.playSoundEffectUntilDone(sounds.systemReady);
 
 forever(function () {
-    if (!Drive.isDriving())
+    if (!Drive.isMoving())
         Drive.info();
 });

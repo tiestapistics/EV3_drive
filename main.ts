@@ -9,9 +9,10 @@ namespace Drive {
     let minSpeed = 3;
     let angleSpeed = 15;
 
-    let _drive = false;
-    export function isDriving(): boolean {
-        return _drive;
+    let _moving = false;
+    //% block
+    export function isMoving(): boolean {
+        return _moving;
     }
 
     //% block="Setup wheel diameter: %diameter cm and wheelbase: %wheelbase cm || and direction forward %forward"
@@ -81,6 +82,7 @@ namespace Drive {
         brick.showString(" Motor: " + formatNumber(motor), 7);
     }
 
+    //% block
     export function reset() {
         motorStop();
     }
@@ -91,6 +93,7 @@ namespace Drive {
     let _currentSpeed = 0;
     let _lastSpeed = 0;
 
+    //% block
     export function motorStop() {
         motors.largeAB.setBrake(true);
         motors.largeAB.stop();
@@ -98,7 +101,7 @@ namespace Drive {
         _targetCm = 0;
         _currentSpeed = 0;
         _lastSpeed = 0;
-        _drive = false;
+        _moving = false;
     }
 
     //% block="Motor speed: %speed || steering: %steering || percent: %percent"
@@ -114,7 +117,7 @@ namespace Drive {
         _lastSpeed += (speed - _lastSpeed) * percent / 100;
         _lastSpeed = fixSpeed(_lastSpeed, true);
 
-        _drive = (_lastSpeed != 0) || (steering != 0);
+        _moving = (_lastSpeed != 0) || (steering != 0);
         motors.largeAB.tank((_lastSpeed + steering) * _forward, (_lastSpeed - steering) * _forward);
         control.waitMicros(1);
 
