@@ -65,6 +65,7 @@ namespace Drive {
         ) / 2;
     }
 
+    //% block
     export function info() {
         let gyro = sensors.gyro1.angle();
         let motorA = motor2cm(motors.largeA.angle());
