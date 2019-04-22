@@ -1,32 +1,64 @@
 //% color="#AA01FF"
 namespace Drive {
-    let _diameter = 5;
-    let _wheelbase = 5;
-    let _forward = 1;
-    let _rotation = _diameter * Math.PI;
-    let _turningCircle = _wheelbase * Math.PI;
+    let _motors: motors.SynchedMotorPair = motors.largeAB;
+    let _motor1: motors.Motor = motors.largeA;
+    let _motor2: motors.Motor = motors.largeB;
+    let _gyro: sensors.GyroSensor;
 
-    let minSpeed = 3;
-    let angleSpeed = 15;
+    let _diameter: number = 5;
+    let _wheelbase: number = 5;
+    let _forward: number = 1;
+    let _rotation: number = _diameter * Math.PI;
+    let _turningCircle: number = _wheelbase * Math.PI;
 
-    let _moving = false;
+    let minSpeed: number = 3;
+    let angleSpeed: number = 15;
+
+    let _moving: boolean = false;
     //% block
+    //% group="Info"
     export function isMoving(): boolean {
         return _moving;
     }
 
-    //% block="Setup wheel diameter: %diameter cm and wheelbase: %wheelbase cm || and direction forward %forward"
+    //% block="Setup wheel motors: %motorsPair with diameter: %diameter cm and wheelbase: %wheelbase cm || and direction forward %forward"
+    //% motorsPair.defl=motors.largeAB
+    //% gyro.defl=sensors.gyro1
     //% diameter.defl=5.0
     //% wheelbase.defl=5.0
     //% forward.defl=true
+    //% group="Setup"
     //% inlineInputMode=inline
-    export function setup(diameter: number, wheelbase: number, forward?: boolean) {
+    export function setup(motorsPair: motors.SynchedMotorPair, gyro: sensors.GyroSensor, diameter: number, wheelbase: number, forward?: boolean) {
+        _motors = motorsPair;
+        _gyro = gyro;
+
         _diameter = diameter;
         _wheelbase = wheelbase;
         _forward = (forward) ? 1 : -1;
 
         _rotation = _diameter * Math.PI;
         _turningCircle = _wheelbase * Math.PI;
+
+        // ---
+
+        _motors.pauseUntilReady();
+
+        // --
+
+        let motorStr = _motors.toString();
+        switch (motorStr[0]) {
+            case 'A': _motor1 = motors.largeA; break;
+            case 'B': _motor1 = motors.largeB; break;
+            case 'C': _motor1 = motors.largeC; break;
+            case 'D': _motor1 = motors.largeD; break;
+        }
+        switch (motorStr[2]) {
+            case 'A': _motor2 = motors.largeA; break;
+            case 'B': _motor2 = motors.largeB; break;
+            case 'C': _motor2 = motors.largeC; break;
+            case 'D': _motor2 = motors.largeD; break;
+        }
     }
 
     function formatNumber(num: number) {
@@ -59,44 +91,55 @@ namespace Drive {
         return angle / 360 * _rotation * _forward;
     }
 
-    function motorPos(): number {
+    //% block
+    //% group="Info"
+    export function driven(): number {
         return (
-            motor2cm(motors.largeA.angle()) +
-            motor2cm(motors.largeB.angle())
+            motor2cm(_motor1.angle()) +
+            motor2cm(_motor2.angle())
         ) / 2;
     }
 
     //% block
+    //% group="Info"
     export function info() {
-        let gyro = sensors.gyro1.angle();
-        let motorA = motor2cm(motors.largeA.angle());
-        let motorB = motor2cm(motors.largeB.angle());
-        let motor = (motorA + motorB) / 2;
+        let gyro = _gyro.angle();
+        let drift = _gyro.drift();
+
+        let motor1 = motor2cm(_motor1.angle());
+        let motor2 = motor2cm(_motor2.angle());
+        let motor = driven();
 
         brick.clearScreen();
         brick.showString("    ID: " + control.deviceSerialNumber(), 2);
         brick.showString("  BATT: " + brick.batteryLevel(), 3);
         brick.showString("  GYRO: " + formatNumber(gyro), 4);
-        brick.showString("MotorA: " + formatNumber(motorA), 5);
-        brick.showString("MotorB: " + formatNumber(motorB), 6);
-        brick.showString(" Motor: " + formatNumber(motor), 7);
+        brick.showString(" DRIFT: " + formatNumber(drift), 5);
+        brick.showString("Motor1: " + formatNumber(motor1), 6);
+        brick.showString("Motor2: " + formatNumber(motor2), 7);
+        brick.showString(" Motor: " + formatNumber(motor), 8);
     }
 
     //% block
+    //% group="Setup"
     export function reset() {
         motorStop();
+
+        _motor1.clearCounts();
+        _motor2.clearCounts();
     }
 
     // ---
 
-    let _targetCm = 0;
-    let _currentSpeed = 0;
-    let _lastSpeed = 0;
+    let _targetCm: number = 0;
+    let _currentSpeed: number = 0;
+    let _lastSpeed: number = 0;
 
     //% block
+    //% group="GYRO"
     export function motorStop() {
-        motors.largeAB.setBrake(true);
-        motors.largeAB.stop();
+        _motors.setBrake(true);
+        _motors.stop();
 
         _targetCm = 0;
         _currentSpeed = 0;
@@ -108,6 +151,7 @@ namespace Drive {
     //% speed.defl=20
     //% steering.defl=0
     //% percent.defl=100
+    //% group="Setup"
     //% inlineInputMode=inline
     export function motor(speed: number, steering?: number, percent?: number) {
         if (("" + percent) == "NaN") percent = 0;
@@ -118,7 +162,7 @@ namespace Drive {
         _lastSpeed = fixSpeed(_lastSpeed, true);
 
         _moving = (_lastSpeed != 0) || (steering != 0);
-        motors.largeAB.tank((_lastSpeed + steering) * _forward, (_lastSpeed - steering) * _forward);
+        _motors.tank((_lastSpeed + steering) * _forward, (_lastSpeed - steering) * _forward);
         control.waitMicros(1);
 
         // console.log("motor" + " P:" + formatNumber(percent) + " A:" + formatNumber(_lastSpeedA) + " B:" + formatNumber(_lastSpeedB));
@@ -131,9 +175,10 @@ namespace Drive {
     //% speed.defl=20
     //% speed.defl=0
     //% percent.defl=0
+    //% group="Setup"
     //% inlineInputMode=inline
     export function GYROmotor(angle: number, speed?: number, percent?: number) {
-        let gyro = sensors.gyro1.angle();
+        let gyro = _gyro.angle();
         let diff = gyro - angle;
 
         let direction = (diff > 0) ? -1 : 1;
@@ -151,13 +196,14 @@ namespace Drive {
 
     //% block="Rotate (with GYRO) on angle: %angle || stop: %stop"
     //% stop.defl=true
+    //% group="GYRO"
     //% inlineInputMode=inline
     export function GYROrotate(angle: number, stop?: boolean) {
         for (let i = 0; i < 3; i++) {
             const loops = 15;
             let count = 0;
             do {
-                let gyro = sensors.gyro1.angle();
+                let gyro = _gyro.angle();
                 let diff = gyro - angle;
 
                 if (Math.abs(diff) <= 0.9) break;
@@ -179,6 +225,7 @@ namespace Drive {
     //% block="Drive (with GYRO) %cm cm from %angleA to %angleE || with speed: %speedE"
     //% cm.defl=10.0
     //% speedE.defl=NaN
+    //% group="GYRO"
     //% inlineInputMode=inline
     export function GYROdrive(cm: number, angleA: number, angleE: number, speedE?: number) {
         if (("" + speedE) == "NaN") speedE = _currentSpeed;
@@ -195,14 +242,14 @@ namespace Drive {
         }
 
         if (_currentSpeed == 0) {
-            _targetCm = motorPos();
+            _targetCm = driven();
         }
         let start = _targetCm;
 
         _targetCm += cm * direction;
 
         do {
-            let pos = motorPos() - start;
+            let pos = driven() - start;
 
             let percent = Math.abs(pos) / Math.abs(cm) * 100;
 

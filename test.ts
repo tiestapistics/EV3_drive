@@ -33,7 +33,7 @@ function GYROdriveTEST() {
 
 // ---
 
-Drive.setup(6.3, 9, false);
+Drive.setup(motors.largeAB, sensors.gyro1, 6.3, 9, false);
 
 brick.buttonLeft.onEvent(ButtonEvent.Pressed, function () {
     // Drive.GYROmotorTEST();
