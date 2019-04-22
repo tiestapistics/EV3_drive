@@ -16,8 +16,8 @@ namespace Drive {
     }
 
     //% block="Setup wheel diameter: %diameter cm and wheelbase: %wheelbase cm || and direction forward %forward"
-    //% diameter.defl=5
-    //% wheelbase.defl=5
+    //% diameter.defl=5.0
+    //% wheelbase.defl=5.0
     //% forward.defl=true
     //% inlineInputMode=inline
     export function setup(diameter: number, wheelbase: number, forward?: boolean) {
@@ -177,6 +177,7 @@ namespace Drive {
     }
 
     //% block="Drive (with GYRO) %cm cm from %angleA to %angleE || with speed: %speedE"
+    //% cm.defl=10.0
     //% speedE.defl=NaN
     //% inlineInputMode=inline
     export function GYROdrive(cm: number, angleA: number, angleE: number, speedE?: number) {
