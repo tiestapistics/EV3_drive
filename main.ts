@@ -23,7 +23,7 @@ namespace Drive {
     }
 
     //% block="Setup wheel motors: %device and gyro: %gyro with diameter: %diameter cm and wheelbase: %wheelbase cm || and direction forward %forward"
-    //% motorsPair.defl=motors.largeAB
+    //% device.defl=motors.largeAB
     //% gyro.defl=sensors.gyro1
     //% diameter.min=0.1
     //% diameter.defl=5.0
