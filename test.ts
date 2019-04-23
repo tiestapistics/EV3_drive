@@ -61,7 +61,6 @@ brick.buttonEnter.onEvent(ButtonEvent.Pressed, function () {
     music.playSoundEffect(sounds.systemReady);
 
     Drive.info();
-
 })
 
 // ----
@@ -110,4 +109,5 @@ music.playSoundEffectUntilDone(sounds.systemReady);
 forever(function () {
     if (!Drive.isMoving())
         Drive.info();
+    pause(0.5 * 1000);
 });

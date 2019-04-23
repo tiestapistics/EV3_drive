@@ -1,8 +1,9 @@
 //% color="#AA01FF"
 namespace Drive {
-    let _motors: motors.SynchedMotorPair = motors.largeAB;
-    let _motor1: motors.Motor = motors.largeA;
-    let _motor2: motors.Motor = motors.largeB;
+    let _motors: motors.SynchedMotorPair;
+    let _motor1: motors.Motor;
+    let _motor2: motors.Motor;
+
     let _gyro: sensors.GyroSensor;
 
     let _diameter: number = 5;
@@ -21,16 +22,18 @@ namespace Drive {
         return _moving;
     }
 
-    //% block="Setup wheel motors: %motorsPair with diameter: %diameter cm and wheelbase: %wheelbase cm || and direction forward %forward"
+    //% block="Setup wheel motors: %device and gyro: %gyro with diameter: %diameter cm and wheelbase: %wheelbase cm || and direction forward %forward"
     //% motorsPair.defl=motors.largeAB
     //% gyro.defl=sensors.gyro1
+    //% diameter.min=0.1
     //% diameter.defl=5.0
+    //% wheelbase.min=0.1
     //% wheelbase.defl=5.0
     //% forward.defl=true
     //% group="Setup"
     //% inlineInputMode=inline
-    export function setup(motorsPair: motors.SynchedMotorPair, gyro: sensors.GyroSensor, diameter: number, wheelbase: number, forward?: boolean) {
-        _motors = motorsPair;
+    export function setup(device: motors.SynchedMotorPair, gyro: sensors.GyroSensor, diameter: number, wheelbase: number, forward?: boolean) {
+        _motors = device;
         _gyro = gyro;
 
         _diameter = diameter;
@@ -48,17 +51,18 @@ namespace Drive {
 
         let motorStr = _motors.toString();
         switch (motorStr[0]) {
-            case 'A': _motor1 = motors.largeA; break;
-            case 'B': _motor1 = motors.largeB; break;
-            case 'C': _motor1 = motors.largeC; break;
-            case 'D': _motor1 = motors.largeD; break;
+            case 'A': _motor1 = new motors.Motor(Output.A, true); break;
+            case 'B': _motor1 = new motors.Motor(Output.B, true); break;
+            case 'C': _motor1 = new motors.Motor(Output.C, true); break;
+            case 'D': _motor1 = new motors.Motor(Output.D, true); break;
         }
         switch (motorStr[2]) {
-            case 'A': _motor2 = motors.largeA; break;
-            case 'B': _motor2 = motors.largeB; break;
-            case 'C': _motor2 = motors.largeC; break;
-            case 'D': _motor2 = motors.largeD; break;
+            case 'A': _motor2 = new motors.Motor(Output.A, true); break;
+            case 'B': _motor2 = new motors.Motor(Output.B, true); break;
+            case 'C': _motor2 = new motors.Motor(Output.C, true); break;
+            case 'D': _motor2 = new motors.Motor(Output.D, true); break;
         }
+        reset();
     }
 
     function formatNumber(num: number) {
@@ -112,12 +116,13 @@ namespace Drive {
 
         brick.clearScreen();
         brick.showString("    ID: " + control.deviceSerialNumber(), 2);
-        brick.showString("  BATT: " + brick.batteryLevel(), 3);
-        brick.showString("  GYRO: " + formatNumber(gyro), 4);
-        brick.showString(" DRIFT: " + formatNumber(drift), 5);
-        brick.showString("Motor1: " + formatNumber(motor1), 6);
-        brick.showString("Motor2: " + formatNumber(motor2), 7);
-        brick.showString(" Motor: " + formatNumber(motor), 8);
+        brick.showString("MILLIS: " + control.millis(), 3);
+        brick.showString("  BATT: " + brick.batteryLevel(), 4);
+        brick.showString("  GYRO: " + formatNumber(gyro), 5);
+        brick.showString(" DRIFT: " + formatNumber(drift), 6);
+        brick.showString("Motor1: " + formatNumber(motor1), 7);
+        brick.showString("Motor2: " + formatNumber(motor2), 8);
+        brick.showString(" Motor: " + formatNumber(motor), 9);
     }
 
     //% block
