@@ -18,7 +18,7 @@ Accelerate slowly to the final speed of 30. Drive 5 cm straight ahead.
 Drive another 5 cm and then stop (final speed = 0).
 ```
 	let angle: number = 0;
-	let speed: number = 30;
+	let speed: number = 0;
 	Drive.gyroDrive(5, angle, angle, speed);
 ```
 
