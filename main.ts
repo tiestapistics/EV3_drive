@@ -20,24 +20,21 @@ namespace Drive {
     let _gyroDirection: number;
 
     let _wheelDiameter: number;
-    let _wheelBase: number;
 
     let _moving: boolean;
 
     let _calibrate: number;
 
-    //% block='Setup wheel motors: %motorPair and Gyro: %gyro with diameter: %wheelDiameter cm and wheelBase: %wheelbase cm || and motor direction forward %motorDirection || and Gyro direction forward %gyroDirection'
+    //% block='Setup wheel motors: %motorPair and Gyro: %gyro with diameter: %wheelDiameter cm || and motor direction forward %motorDirection || and Gyro direction forward %gyroDirection'
     //% motorPair.defl=motors.largeAB
     //% Gyro.defl=sensors.Gyro1
     //% wheelDiameter.min=0.1
     //% wheelDiameter.defl=5.0
-    //% wheelBase.min=0.1
-    //% wheelBase.defl=5.0
     //% motorDirection.defl=true
     //% gyroDirection.defl=true
     //% group="Setup"
     //% inlineInputMode=inline
-    export function setup(motorPair: motors.SynchedMotorPair, gyro: sensors.GyroSensor, wheelDiameter: number, wheelBase: number, motorDirection?: boolean, gyroDirection?: boolean) {
+    export function setup(motorPair: motors.SynchedMotorPair, gyro: sensors.GyroSensor, wheelDiameter: number, motorDirection?: boolean, gyroDirection?: boolean) {
         motorDirection = Tools.defaultValue(motorDirection, true);
         gyroDirection = Tools.defaultValue(gyroDirection, true);
 
@@ -50,7 +47,6 @@ namespace Drive {
         _gyro = gyro;
 
         _wheelDiameter = Math.abs(wheelDiameter);
-        _wheelBase = Math.abs(wheelBase);
 
         _motorDirection = (motorDirection) ? 1 : -1;
         _gyroDirection = (gyroDirection) ? 1 : -1;
@@ -82,7 +78,6 @@ namespace Drive {
         console.log('Motor direction: ' + _motorDirection);
         console.log('Gyro direction: ' + _gyroDirection);
         console.log('Wheel diameter: ' + _wheelDiameter);
-        console.log('Wheel base: ' + _wheelBase);
 
         // ---
 

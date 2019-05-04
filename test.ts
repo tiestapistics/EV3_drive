@@ -3,14 +3,14 @@
 // Drive.debug = true;
 
 function setup1TEST() {
-    Drive.setup(motors.largeAB, sensors.gyro1, 6.2, 9, false, false);
+    Drive.setup(motors.largeAB, sensors.gyro1, 6.2, false, false);
     assert('Motor1', Drive.getMotor1(), 0);
     assert('Motor2', Drive.getMotor2(), 0);
     assertFalse('stopped', Drive.stopped);
 }
 
 function setup2TEST() {
-    Drive.setup(motors.largeAB, sensors.gyro1, 6.2, 9, true, false);
+    Drive.setup(motors.largeAB, sensors.gyro1, 6.2, true, false);
     assert('Motor1', Drive.getMotor1(), 0);
     assert('Motor2', Drive.getMotor2(), 0);
     assertFalse('stopped', Drive.stopped);
