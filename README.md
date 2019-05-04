@@ -3,6 +3,48 @@
 MakeCode Library for the LEGO MINDSTORMS EV3.
 Allows the EV3 to move along a line or angle using the gyro sensor. The distances can be specified in centimeters through the setup of wheel diameters.
 
+## Usage
+
+Setup for the use of large motors A and B. The gyro sensor is on port 1 and the wheel diameter is 6.2 cm.
+```
+	Drive.setup(motors.largeAB, sensors.gyro1, 6.2);
+```
+
+Accelerate slowly to the final speed of 30. Drive 5 cm straight ahead.
+```
+	Drive.gyroDrive(5, 0, 0, 30);
+```
+
+Drive another 5 cm and then stop (final speed = 0).
+```
+	let angle: number = 0;
+	let speed: number = 30;
+	Drive.gyroDrive(5, angle, angle, speed);
+```
+
+Drive on to the 90 degree line.
+```
+	Drive.gyroRotate(90);
+```
+
+
+And now a more complex thing: Start the ride at 10 degrees and drive 15 cm in a curve so that at the end 40 degrees and a speed of 30 are reached. Stop abruptly.
+```
+	Drive.gyroDrive(15, 10, 40, 30);
+	Drive.motorStop();
+```
+
+Show current gyro and motor values in EV3 display.
+```
+forever(function () {
+    Drive.info();
+    pause(0.5 * 1000);
+});
+
+```
+
+More examples can be found in the file **test.ts**.
+You can also run the test cases on the EV3. With the keys right / left you can select the test cases and run them with enter.
 
 ## TODO
 
