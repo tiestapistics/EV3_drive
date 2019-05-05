@@ -12,5 +12,9 @@
     "testFiles": [
         "test.ts"
     ],
-    "public": true
+    "public": true,
+    "targetVersions": {
+        "target": "0.1.56",
+        "pxt": "3.14.9"
+    }
 }
